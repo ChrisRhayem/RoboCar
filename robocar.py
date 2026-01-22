@@ -3,5 +3,5 @@ class RoboCar(object):
         self.n = nom    # nom:string
         self.coo = coordonnees  # coordonnees:tuple(int, int)
         self.v = vitesse    # vitesse:int
-        self.a = angle  # angle:int {0;360}
+        self.a = angle  # orientation (nord:0, est:1, sud:2, ouest:3)
     
