@@ -1,4 +1,4 @@
-from affichage_terminal import orientation, avancer, reculer
+from affichage_terminal import avancer, reculer
 from robocar import * 
 from tkinter import *
 from tkinter import ttk
@@ -7,16 +7,15 @@ def affiche(matrice:list, voiture:RoboCar, frm)->None:
     for i in range(len(matrice)):
         for j in range(len(matrice[i])-1):
             if (i, j) == voiture.coo:
-                ttk.Label(frm, text=orientation(voiture)).grid(column=i, row=j)
+                ttk.Label(frm, text=voiture.orientation()).grid(column=i, row=j)
             else:
                 ttk.Label(frm, text=matrice[i][j]).grid(column=i, row=j)
         if (i, j+1) == voiture.coo:
-            ttk.Label(frm, text=orientation(voiture)).grid(column=i, row=j+1)
+            ttk.Label(frm, text=voiture.orientation()).grid(column=i, row=j+1)
         else:
             ttk.Label(frm, text=matrice[i][j+1]).grid(column=i, row=j+1)
-    print(f"Coordoonées de la voiture: {voiture.coo}")
-    print(f"Orientation de la voiture: {orientation(voiture)}")
-    print("----------------------------------------------------\n")
+    ttk.Label(frm, text=f"Coordoonées de la voiture: {voiture.coo}").grid(column=i+1, row=0)
+    ttk.Label(frm, text=f"Orientation de la voiture: {voiture.orientation()}").grid(column=i+1, row=1)
 
 def keypressed2(k):
     """
