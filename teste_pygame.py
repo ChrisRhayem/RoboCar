@@ -1,6 +1,5 @@
 import pygame, random
 from pygame.locals import *
-from os.path import expanduser
 
 def on_grid_random():
     x = random.randint(0,450)
@@ -11,8 +10,8 @@ def collision(c1, c2):
     return (c1[0] == c2[0]) and (c1[1] == c2[1])
 
 UP = 0
-DOWN = 1
-RIGHT = 2
+DOWN = 1 
+RIGHT = 2 
 LEFT = 3
 
 clock = pygame.time.Clock()
@@ -21,11 +20,10 @@ pygame.init()
 screen = pygame.display.set_mode((500,500))
 pygame.display.set_caption('Flash Run')
 
-
 #Restart Function
 def restart_game():
-    restart_font = pygame.font.Font('freesansbold.ttf',50)
-    restart_screen = restart_font.render('Press Space to Restart', True, (100, 100, 100))
+    restart_font = pygame.font.Font('freesansbold.ttf',35)
+    restart_screen = restart_font.render('Press Space to Restart', True, (50, 50, 50))
     restart_rect = restart_screen.get_rect()
     restart_rect.midtop = (250, 250)
     
@@ -46,14 +44,14 @@ def restart_game():
               
 #The game itself
 def start_game():
-    snake = [(200, 200),(210, 200), (220, 200)]
-    snake_skin = pygame.Surface((50,50))
-    snake_skin.fill((34,139,34))
-    snake_speed = 5
+    flash = [(200, 200)]
+    flash_body = pygame.Surface((50,50))
+    flash_body.fill((34,139,34))
+    flash_speed = 5
 
-    food_pos = on_grid_random()
-    food = pygame.Surface((50,50))
-    food.fill((255,0,0))
+    """obstacle_pos = on_grid_random()
+    obstacle = pygame.Surface((50,50))
+    obstacle.fill((255,0,0))"""
 
     my_direction = LEFT
 
@@ -62,7 +60,7 @@ def start_game():
     game_over = False
 
     while not game_over:
-        clock.tick(snake_speed)
+        clock.tick(flash_speed)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -79,61 +77,50 @@ def start_game():
                 if event.key == pygame.K_RIGHT and my_direction != LEFT:
                     my_direction = RIGHT
         
-        #Adding points, speed and the new part of the snake        
-        if collision(snake[0], food_pos):
-            food_pos = on_grid_random()
-        
-            
+        #Collision with obstacle        
+        """if collision(flash[0], obstacle_pos):
+            pass"""
+          
         # Check if Flash has collided with the wall
-        if snake[0][0] == 500 or snake[0][1] == 500 or snake[0][0] < 0 or snake [0][1] < 0:
+        if flash[0][0] == 500 or flash[0][1] == 500 or flash[0][0] < 0 or flash [0][1] < 0:
             mur = True
             break
         
         if game_over:
             break
 
-        for i in range(len(snake) - 1, 0, -1):
-            snake[i] = (snake[i-1][0], snake[i-1][1])
+        for i in range(len(flash) - 1, 0, -1):
+            flash[i] = (flash[i-1][0], flash[i-1][1])
 
         #Flash movements 
         if my_direction ==  UP:
-            snake[0] = (snake[0][0], snake[0][1] - 50)
+            flash[0] = (flash[0][0], flash[0][1] - 10)
         if my_direction ==  DOWN:
-            snake[0] = (snake[0][0], snake[0][1] + 50)
+            flash[0] = (flash[0][0], flash[0][1] + 10)
         if my_direction ==  RIGHT:
-            snake[0] = (snake[0][0] + 50, snake[0][1])
+            flash[0] = (flash[0][0] + 10, flash[0][1])
         if my_direction ==  LEFT:
-            snake[0] = (snake[0][0] - 50, snake[0][1])            
+            flash[0] = (flash[0][0] - 10, flash[0][1])            
                 
         screen.fill((0,0,0))
-        screen.blit(food, food_pos)
+        #screen.blit(obstacle, obstacle_pos)
         
-        # Draw horizontal lines
-        for x in range(0, 500, 50): 
-            pygame.draw.line(screen, (40, 40, 40), (x, 0), (x, 500))
-        # Draw vertical lines
-        for y in range(0, 500, 50): 
-            pygame.draw.line(screen, (40, 40, 40), (0, y), (500, y))
-        
-        
-        for pos in snake: 
-            screen.blit(snake_skin, pos)
+        for pos in flash: 
+            screen.blit(flash_body, pos)
                 
         pygame.display.update()
         
     while True:
         #Displaying Game Over
         game_over_font = pygame.font.Font('freesansbold.ttf', 75)
-        game_over_screen = game_over_font.render('Game Over', True, (255,255,255))
+        game_over_screen = game_over_font.render('Game Over', True, (100,100,100))
         game_over_rect = game_over_screen.get_rect()
-        game_over_rect.midtop = (600 / 2, 100)
+        game_over_rect.midtop = (500 / 2, 100)
         
         screen.blit(game_over_screen, game_over_rect)
         restart_game()
         pygame.display.update()
         pygame.time.wait(500)
-        
-        
         
         while True:
             for event in pygame.event.get():
