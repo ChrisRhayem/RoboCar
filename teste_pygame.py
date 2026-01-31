@@ -6,7 +6,6 @@ clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("Flash Run")
-clock = pygame.time.Clock()
 
 
 def draw_flash(position, angle):
