@@ -53,13 +53,11 @@ def start_game():
         keys = pygame.key.get_pressed()
         old_x, old_y = flash.coo
 
-        # rotation (en degrés)
         if keys[K_LEFT]:
             flash.a = (flash.a - rotation_speed) % 360
         if keys[K_RIGHT]:
             flash.a = (flash.a + rotation_speed) % 360
 
-        # déplacement
         angle_rad = math.radians(flash.a)
 
         if keys[K_UP]:
@@ -74,7 +72,7 @@ def start_game():
                 flash.coo[1] - math.sin(angle_rad) * flash.v
             )
 
-        # collision avec les bords
+        # en cas de collision on garde les anciennes coordonnées
         if (flash.coo[0] < 0 or flash.coo[1] < 0 or
             flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
             flash.coo = (old_x, old_y)
