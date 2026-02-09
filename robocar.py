@@ -22,3 +22,16 @@ class RoboCar(object):
 
     def tourner_droite(self, vitesse):
         self.a = (self.a + vitesse) % 360
+
+    def suivre_trajectoire(self, instructions):
+        """Faire flash suivre une trajectoire"""
+        for action, valeur in instructions:
+            if action == "avancer":
+                self.avancer()
+            elif action == "reculer":
+                self.reculer()
+            elif action == "tourner_gauche":
+                self.tourner_gauche(valeur)
+            elif action == "tourner_droite":
+                self.tourner_droite(valeur)
+    
