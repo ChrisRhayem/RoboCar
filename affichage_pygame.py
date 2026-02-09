@@ -52,19 +52,6 @@ def main():
         if (flash.coo[0] < 0 or flash.coo[1] < 0 or
             flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
             flash.coo = (old_x, old_y)
-        
-        trajet_carre = []
-        if keys[K_SPACE]:
-            trajet_carre = [("avancer", 100),
-                        ("tourner_droite", 90),
-                        ("avancer", 100),
-                        ("tourner_droite", 90),
-                        ("avancer", 100),
-                        ("tourner_droite", 90),
-                        ("avancer", 100)]
-        if trajet_carre:
-            flash.suivre_trajectoire(trajet_carre)
-        
 
         screen.fill((0, 0, 0))
         draw_flash(flash)
