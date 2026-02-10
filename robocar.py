@@ -44,6 +44,8 @@ class RoboCar(object):
         self.coo = coord
         self.a = angle
 
-        while self.collision(obstacles):
-            self.tourner_droite(5)
-            self.avancer()
+        for obs in obstacles:
+            if self.collision(obs):
+                self.tourner_droite(5)
+                self.avancer()
+                return
