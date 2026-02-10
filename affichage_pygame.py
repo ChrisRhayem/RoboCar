@@ -22,6 +22,14 @@ def draw_flash(voiture):
 
     pygame.draw.line(screen, (255, 255, 255), center, tip, 3)
 
+def draw_obstacles(obstacles):
+    """Cette fonction dessine les obstacles sur l'écran"""
+    for obs in obstacles:
+        x, y = obs.pos
+        w, h = obs.dim
+        pygame.draw.rect(screen, (200, 0, 0), (x, y, w, h))
+
+
 def main():
     """Cette fonction represente le main qui lance la boucle principale du programme"""
     flash = RoboCar("Flash", (200, 200), 4, 0, rayon)
