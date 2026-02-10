@@ -52,6 +52,13 @@ def main():
         if (flash.coo[0] < 0 or flash.coo[1] < 0 or
             flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
             flash.coo = (old_x, old_y)
+<<<<<<< ours
+=======
+        
+        if event.type == KEYDOWN and event.key == K_SPACE:
+            trajet_carre = flash.trajectoire_carree(50)
+
+>>>>>>> theirs
 
         screen.fill((0, 0, 0))
         draw_flash(flash)
