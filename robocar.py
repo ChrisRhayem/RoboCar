@@ -39,3 +39,11 @@ class RoboCar(object):
             y1 < y2 + h2 and
             y1 + h1 > y2
         )
+    def Contourne(self, coord, angle, obstacles):
+        "cette fonction fait tourner la voiture jusqu'à ce qu'elle puisse avancer sans collision"
+        self.coo = coord
+        self.a = angle
+
+        while self.collision(obstacles):
+            self.tourner_droite(5)
+            self.avancer()
