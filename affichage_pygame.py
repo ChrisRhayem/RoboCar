@@ -37,9 +37,9 @@ def main():
     v_rotation= 3
     running = True
     obstacles = [
-    Obstacle("rectangle", (100, 150), (80, 50)),
-    Obstacle("rectangle", (300, 200), (50, 50))
-]
+        Obstacle("rectangle", (100, 150), (80, 50)),
+        Obstacle("rectangle", (300, 200), (50, 50))
+    ]
 
     while running:
         clock.tick(60)
@@ -67,11 +67,8 @@ def main():
                 flash.Contourne(flash.coo, flash.a, obstacles)
                 break
 
-        # collision avec le mur
-        if (flash.coo[0] < 0 or flash.coo[1] < 0 or
-            flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
-            flash.coo = (old_x, old_y)
-            
+        flash.mur_collision(500, 500, (old_x, old_y))
+
         screen.fill((0, 0, 0))
         draw_flash(flash)
         draw_obstacles(obstacles)
