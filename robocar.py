@@ -42,10 +42,10 @@ class RoboCar(object):
         x2, y2 = obstacle.pos #coordonnées de l'obstacle
         l2, h2 = obstacle.dim #taille de l'obstacle
         return (
-            x1 < x2 + l2 and 
-            x1 + l1 > x2 and
-            y1 < y2 + h2 and
-            y1 + h1 > y2
+            x1 < x2 + l2 and #Le bord gauche du robot est avant le bord droit de l’obstacle
+            x1 + l1 > x2 and #le bord droit du robot est après le bord gauche de l’obstacle
+            y1 < y2 + h2 and #Le haut du robot est au-dessus du bas de l’obstacle
+            y1 + h1 > y2 #et le bas du robot est en dessous du haut de l’obstacle
         )
     
     def contourne(self, coord, angle, obstacles):
