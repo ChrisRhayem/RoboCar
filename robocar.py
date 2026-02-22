@@ -33,3 +33,9 @@ class RoboCar:
         v = (self.v_r + self.v_l) / 2
         w = (self.v_r - self.v_l) / self.WHEEL_BASE #c'est le theoreme de Thales applique au cercle de rotation
         return v, w
+    def update(self, dt):
+        """Mise a jour du robot"""
+        v, w = self.calculer_vitesse()
+        self.x += v * math.cos(self.angle) * dt
+        self.y += v * math.sin(self.angle) * dt
+        self.angle += w * dt #si w<0 on tourne a droite et a gauche sinon
