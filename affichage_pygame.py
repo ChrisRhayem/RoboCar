@@ -1,4 +1,5 @@
 from robocar import *
+from strategies import EviterObstacle
 import pygame
 import math
 from pygame.locals import *
@@ -15,15 +16,9 @@ clock = pygame.time.Clock()
 
 def draw_flash(voiture):
     """Cette fonction dessine la voiture sur l'écran"""
-    x, y = voiture.coo
-    center = (int(x + RAYON), int(y + RAYON))
+    x, y = voiture.x, voiture.y
 
-    pygame.draw.circle(screen, (34, 139, 34), center, RAYON)
-
-    angle_rad = math.radians(voiture.a)
-    tip = (center[0] + math.cos(angle_rad) * 15,center[1] + math.sin(angle_rad) * 15)
-
-    pygame.draw.line(screen, (255, 255, 255), center, tip, 3)
+    pygame.draw.rect(screen, (34, 139, 34), (x,y, 50,30))
 
 def draw_obstacles(obstacles):
     """Cette fonction dessine les obstacles sur l'écran"""
@@ -32,10 +27,9 @@ def draw_obstacles(obstacles):
         w, h = obs.dim
         pygame.draw.rect(screen, (200, 0, 0), (x, y, w, h))
 
-
 def main():
     """Cette fonction represente le main qui lance la boucle principale du programme"""
-    flash = RoboCar("Flash", (200, 200), 4, 0, RAYON)
+    flash = RoboCar("Flash", (200, 200), 90)
 
     v_rotation= 3
     running = True
@@ -54,7 +48,9 @@ def main():
                 running = False
 
         keys = pygame.key.get_pressed()
-        old_x, old_y = flash.coo #on sauvegarde les anciennes coordonnees pour le cas de collision
+        old_x, old_y = flash.x, flash.y #on sauvegarde les anciennes coordonnees pour le cas de collision
+        
+        #Il faut changer la maniere que Flash se deplace
         if keys[K_LEFT]:
             flash.tourner_gauche(v_rotation)
 
@@ -72,7 +68,8 @@ def main():
                 flash.contourne(flash.coo, flash.a, obstacles)
                 break
 
-        flash.mur_collision(LARGEUR,HAUTEUR, (old_x, old_y))
+        #Fonction n'existe plus -> Recreer?
+        #flash.mur_collision(LARGEUR,HAUTEUR, (old_x, old_y))
 
         screen.fill((0, 0, 0))
         draw_flash(flash)
