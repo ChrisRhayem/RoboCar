@@ -1,5 +1,5 @@
 from robocar import *
-from strategies import EviterObstacle
+from strategies import Deplacement
 import pygame
 import math
 from pygame.locals import *
@@ -40,34 +40,32 @@ def main():
     for obs in obstacles : 
         obs.pos_aleatoire()
 
-    while running:
-        clock.tick(60)
+    strategie = Deplacement(flash, obstacles)
 
+    while running:
+        dt = clock.tick(60) / 1000.0  # convertir millisecondes en secondes
+        dx = 50
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
 
-        keys = pygame.key.get_pressed()
-        old_x, old_y = flash.x, flash.y #on sauvegarde les anciennes coordonnees pour le cas de collision
+        #strategie.avance()
+        #flash.update(dt)
         
-        #Il faut changer la maniere que Flash se deplace
-        if keys[K_LEFT]:
-            flash.tourner_gauche(v_rotation)
-
-        if keys[K_RIGHT]:
-            flash.tourner_droite(v_rotation)
-
-        if keys[K_UP]:
-            flash.avancer()
-
-        if keys[K_DOWN]:
-            flash.reculer()
-
-        for obs in obstacles:
+        """for obs in obstacles:
             if flash.collision(obs):
-                flash.contourne(flash.coo, flash.a, obstacles)
-                break
-
+                flash.contourne(obs)
+                break"""
+            
+        old_x, old_y = flash.x, flash.y
+        expected_x, expected_y = flash.x + dx, flash.y + dx
+        while(old_x != expected_x or old_y != expected_y):
+            strategie.avance()    
+            flash.update(dt)  # appliquer les vitesses pour mettre à jour position"""
+        
+        strategie.arreter()
+        
         #Fonction n'existe plus -> Recreer?
         #flash.mur_collision(LARGEUR,HAUTEUR, (old_x, old_y))
 
