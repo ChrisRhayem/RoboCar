@@ -90,4 +90,10 @@ class Simulation():
                 return True
         return False
 
-    
+    def update(self, dt):
+        """Met à jour le robot et l'environnement."""
+        old_state = (self.robot.x, self.robot.y)
+        self.robot.update(dt)
+        self.appliquer_murs()
+        a_collision = self.resoudre_collisions(old_state)
+        return a_collision
