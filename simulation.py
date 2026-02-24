@@ -1,34 +1,22 @@
-from robocar import RoboCar
-from affichage_pygame import Affichage
 import math
 
 flash = RoboCar("flash", (0,0), 0)
 
 class Simulation():
-    def __init__():
-        return
-    
-    def update(voiture):
-        return
+    def __init__(self, robot, obstacles, largeur, hauteur):
+        self.robot = robot
+        self.obstacles = obstacles
+        self.largeur = largeur
+        self.hauteur = hauteur
 
-    def get_wheel_speeds(voiture):
-        """Recuperer la vitesse des roues"""
-        return voiture.vG, voiture.vR
-    
-    def set_vitesse_gauche(voiture, v):
-        """Modifier la vitesse du roue gauche"""
-        voiture.vG = v
-        
-    def set_vitesse_droite(voiture, v):
-        """Modifier la vitesse du roue droite"""
-        voiture.vR = v
-        
-    def calculer_vitesse(voiture):
-        """Cette fonction calcule la vitesse lineaire et angulaire"""
-        v = (voiture.vR + voiture.vG) / 2
-        w = (voiture.vR - voiture.vG) / voiture.WHEEL_BASE #c'est le theoreme de Thales applique au cercle de rotation
-        return v, w
+    def get_wheel_speeds(self):
+        return self.robot.vG, self.robot.vR
 
+    def set_vitesse_gauche(self, v):
+        self.robot.set_vitesse_gauche(v)
+
+    def set_vitesse_droite(self, v):
+        self.robot.set_vitesse_droite(v)
     def distance_obstacle(voiture, obstacles, max_range=120):
         """Cette fonction regarde l'obstacle le plus proche"""
         min_dist = max_range #distance minimale
