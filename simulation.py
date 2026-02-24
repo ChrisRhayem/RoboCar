@@ -17,18 +17,19 @@ class Simulation():
 
     def set_vitesse_droite(self, v):
         self.robot.set_vitesse_droite(v)
-    def distance_obstacle(voiture, obstacles, max_range=120):
+    
+    def distance_obstacle(self,max_range=120):
         """Cette fonction regarde l'obstacle le plus proche"""
         min_dist = max_range #distance minimale
 
         # vecteur direction du voiture
-        dir_x = math.cos(voiture.angle)
-        dir_y = math.sin(voiture.angle)
+        dir_x = math.cos(self.robot.angle)
+        dir_y = math.sin(self.robot.angle)
         
-        for obs in obstacles:
+        for obs in self.obstacles:
             ox, oy = obs.pos
-            dx = ox - voiture.x #on cree un vecteur du voiture vers l’obstacle
-            dy = oy - voiture.y
+            dx = ox - self.robot.x #on cree un vecteur du voiture vers l’obstacle
+            dy = oy - self.robot.y
 
             # projection dans la direction du voiture
             projection = dx * dir_x + dy * dir_y #produit scalaire
