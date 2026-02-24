@@ -39,4 +39,9 @@ def draw_robot(screen, robot):
     front_y = y + math.sin(angle) * half_L
     pygame.draw.line(screen, (255, 255, 255), (x, y), (front_x, front_y), 3)
 
+def draw_obstacles(screen, obstacles):
+    """Cette fonction dessine l'obstacle"""
+    for obs in obstacles:
+        pygame.draw.rect(screen, (200, 0, 0), (*obs.pos, *obs.dim))
+
 
