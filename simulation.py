@@ -1,7 +1,5 @@
 import math
 
-flash = RoboCar("flash", (0,0), 0)
-
 class Simulation():
     def __init__(self, robot, obstacles, largeur, hauteur):
         self.robot = robot
@@ -40,34 +38,34 @@ class Simulation():
 
         return min_dist
 
-    def distance_mur(voiture, largeur, hauteur, max_range=120):
+    def distance_mur(self,max_range=120):
         """Cette fonction renvoie la distance au mur le plus proche dans la direction du voiture"""
         # point devant le voiture
-        front_x = voiture.x + math.cos(voiture.angle) * max_range #on avance de 120 pixels dans la direction du voiture
-        front_y = voiture.y + math.sin(voiture.angle) * max_range
+        front_x = self.robot.x + math.cos(self.robot.angle) * max_range #on avance de 120 pixels dans la direction du voiture
+        front_y = self.robot.y + math.sin(self.robot.angle) * max_range
 
         # distance au mur le plus proche
-        dist_x = min(front_x, largeur - front_x)
-        dist_y = min(front_y, hauteur - front_y)
+        dist_x = min(front_x, self.largeur - front_x)
+        dist_y = min(front_y, self.hauteur - front_y)
 
         return min(dist_x, dist_y)
 
-    def obtenir_rectangle(voiture):
+    def obtenir_rectangle(self):
         """cette fonction cree un rectangle simplifie autour du voiture pour faire les collisions"""
-        half_L = voiture.longueur / 2 #le voiture est centre donc on calcule le centre pour le retrancher apres a x et y
-        half_W = voiture.largeur / 2
+        half_L = self.robot.longueur / 2 #le voiture est centre donc on calcule le centre pour le retrancher apres a x et y
+        half_W = self.robot.largeur / 2
 
         return (
-            voiture.x - half_L, #on va du centre vers la gauche
-            voiture.y - half_W, #on va du centre vers le haut
-            voiture.longueur,
-            voiture.largeur
+            self.robot.x - half_L, #on va du centre vers la gauche
+            self.robot.y - half_W, #on va du centre vers le haut
+            self.robot.longueur,
+            self.robot.largeur
         )
 
-    def collision(voiture, obstacle):
+    def collision(self, obstacle):
         """Cette fonction detetcte la collision avec les 
         dimensitions complete (pas seulmenet son centre) du robot avec l'aide de obternir_retangle"""
-        x1, y1, w1, h1 = voiture.obtenir_rectangle()
+        x1, y1, w1, h1 = self.obtenir_rectangle()
         x2, y2 = obstacle.pos
         w2, h2 = obstacle.dim
 
