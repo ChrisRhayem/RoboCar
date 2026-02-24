@@ -59,3 +59,24 @@ def main():
     ]
     sim = Simulation(robot, obstacles, LARGEUR, HAUTEUR) #on cree la simulation qui contient le robot,les obstacles
     strat = Deplacement(sim) #on cree la stratégie qui reçoit la simulation
+    running = True
+    while running:
+        dt = clock.tick(FPS) / 1000.0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        strat.eviter_obstacles(vitesse_avance=80, vitesse_tourne=60, seuil=70) #on decide quoi faire (avancer,tourner) le robot ne bouge pas la mais on regle sa vitesse seulement
+
+        a_collision = sim.update(dt) #c'est a que le robot bouge réellement
+        if a_collision:
+            strat.tourner_sur_place(60)
+
+        screen.fill((0, 0, 0))
+        draw_robot(screen, robot)
+        draw_obstacles(screen, obstacles)
+        pygame.display.update()
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
