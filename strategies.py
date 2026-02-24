@@ -8,8 +8,8 @@ class Deplacement:
             
     def avancer(self,vitesse):
         """Permet Flash d'avancer"""
-        self.sim.set_vitesse_gauche(self.robot, vitesse)
-        self.sim.set_vitesse_droite(self.robot, vitesse)
+        self.sim.set_vitesse_gauche(vitesse)
+        self.sim.set_vitesse_droite(vitesse)
         
     def arreter(self):
         """met la vitesse des roues à 0 pour arrêter le robot"""
@@ -19,7 +19,7 @@ class Deplacement:
     def tourner_sur_place(self,vitesse):
         self.sim.set_vitesse_gauche(-vitesse)
         self.sim.set_vitesse_droite(vitesse)
-    def eviter_obstacles(self, vitesse_avance=80, vitesse_tourne=60, seuil=70):
+    '''def eviter_obstacles(self, vitesse_avance=80, vitesse_tourne=60, seuil=90):
         """Met à jour les vitesses des roues pour avancer et éviter les obstacles."""
         dist_obs = self.sim.distance_obstacle(max_range=140) #la distance au plus proche obstacle devant le robot
         dist_mur = self.sim.distance_mur(max_range=140) #la distance au mur le plus proche
@@ -30,6 +30,18 @@ class Deplacement:
             self.tourner_sur_place(vitesse_tourne)
         else:
             # avance
+            self.avancer(vitesse_avance)'''
+    def eviter_obstacles(self, vitesse_avance=60, vitesse_tourne=120, seuil=100):
+
+        dist_obs = self.sim.distance_obstacle(max_range=160)
+        dist_mur = self.sim.distance_mur(max_range=160)
+        d = min(dist_obs, dist_mur)
+
+        if d < seuil:
+            # rotation plus forte et asymétrique
+            self.sim.set_vitesse_gauche(-vitesse_tourne)
+            self.sim.set_vitesse_droite(vitesse_tourne * 1.5)
+        else:
             self.avancer(vitesse_avance)
     def avancer_x_metres(self, distance, vitesse):
         """Fait avancer le robot d'une distance donnée en mètres à une vitesse donnée."""
