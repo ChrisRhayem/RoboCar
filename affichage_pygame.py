@@ -45,3 +45,17 @@ def draw_obstacles(screen, obstacles):
         pygame.draw.rect(screen, (200, 0, 0), (*obs.pos, *obs.dim))
 
 
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((LARGEUR, HAUTEUR))
+    pygame.display.set_caption("Flash car")
+    clock = pygame.time.Clock()
+
+    robot = RoboCar("Flash", (400, 300), 0)
+    obstacles = [
+        Obstacle("rectangle", (100, 100), (80, 80)),
+        Obstacle("rectangle", (500, 200), (100, 50)),
+        Obstacle("rectangle", (300, 450), (120, 60)),
+    ]
+    sim = Simulation(robot, obstacles, LARGEUR, HAUTEUR) #on cree la simulation qui contient le robot,les obstacles
+    strat = Deplacement(sim) #on cree la stratégie qui reçoit la simulation
