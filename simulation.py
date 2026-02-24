@@ -75,3 +75,19 @@ class Simulation():
             y1 < y2 + h2 and
             y1 + h1 > y2
         )
+    def appliquer_murs(self):
+        """Empeche le robot de sortir de la fenetre"""
+        half_L = self.robot.longueur / 2.0
+        half_W = self.robot.largeur / 2.0
+        self.robot.x = max(half_L, min(self.robot.x, self.largeur - half_L)) #si x est trop petit on le force à half_L si x est trop grand on le force à largeur - half_L et sinon on garde x
+        self.robot.y = max(half_W, min(self.robot.y, self.hauteur - half_W))
+
+    def resoudre_collisions(self, old_state):
+        """Empecher le robot de traverser un obstacle"""
+        for obs in self.obstacles:
+            if self.collision(obs):
+                self.robot.x, self.robot.y = old_state
+                return True
+        return False
+
+    
