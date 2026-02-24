@@ -32,3 +32,9 @@ On a ainsi déplacé les fonctionnalités principales de mouvement directement d
 -collisions et contournement
 On a aussi créé une nouvelle classe Obstacle qui représente les éléments pouvant entrer en collision avec la voiture.
 
+Semaine 5:
+Au cours de cette séance nous avons analysé la structure de notre classe RoboCar et constaté qu’elle contenait beaucoup de fonctions ce qui rendait le code moins lisible.
+Nous avons donc décidé de réorganiser l’architecture du projet en séparant certaines fonctionnalités dans des classes ou modules distincts afin de mieux structurer le programme.
+L’objectif est d’améliorer la clarté du code.
+Aussi nous avons commencé à réfléchir à l’implémentation de différentes stratégies de déplacement pour permettre au robot d’agir de manière autonome.
+Notre objectif pour la semaine prochaine est de permettre au robot de se déplacer seul sans l'aide du clavier en utilisant une stratégie de navigation définie.
