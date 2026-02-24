@@ -22,7 +22,7 @@ class Deplacement:
 
     def eviter_obstacles(self, vitesse_avance=80, vitesse_tourne=60, seuil=30):
      dist_obs = self.sim.distance_obstacle(max_range=140)
-     dist_mur = self.sim.distance_mur(max_range=40)
+     dist_mur = self.sim.distance_mur(max_range=45)
      distance = min(dist_obs, dist_mur)
 
      if distance < seuil:
