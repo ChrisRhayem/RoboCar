@@ -40,8 +40,9 @@ class Deplacement:
         #on avance tout droit
         sim.set_vitesse_gauche(self.robot, vitesse)
         sim.set_vitesse_droite(self.robot, vitesse)
+        self.robot.update(dt) #on met à jour la position du robot
         #distance déjà parcourue depuis le départ
-        dx = self.robot.x - self.depart[0]
+        dx = - self.robot.x + self.depart[0]
         dy = self.robot.y - self.depart[1]
         distance_parcourue = math.sqrt(dx**2 + dy**2)
         #si on a atteint la distance cible, on arrete le robot
