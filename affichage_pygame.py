@@ -61,7 +61,7 @@ def main():
     strat = Deplacement(sim) #on cree la stratégie qui reçoit la simulation
     running = True
     mouvement_lineaire= False
-    while running:
+    while running: 
         dt = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
