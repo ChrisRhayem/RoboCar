@@ -12,16 +12,6 @@ class Simulation():
     ]
         self.largeur = largeur
         self.hauteur = hauteur
-
-    def get_wheel_speeds(self):
-        return self.robot.vG, self.robot.vR
-
-    def set_vitesse_gauche(self, v):
-        self.robot.set_vitesse_gauche(v)
-
-    def set_vitesse_droite(self, v):
-        self.robot.set_vitesse_droite(v)
-    
     def distance_obstacle(self, max_range=140):
      min_dist = max_range
      dir_x = math.cos(self.robot.angle)
