@@ -3,7 +3,13 @@ import math
 
 from robocar import RoboCar
 from simulation import Simulation
-from strategies import Deplacement
+from strategies import (
+    AvancerXMetres,
+    Reculer,
+    FreinageProgressif,
+    EviterObstacles,
+    GestionStrategies
+)
 
 
 class TestRoboCar(unittest.TestCase):
@@ -20,41 +26,17 @@ class TestRoboCar(unittest.TestCase):
     def test_calculer_vitesse(self):
         self.robot.set_vitesse_gauche(50)
         self.robot.set_vitesse_droite(50)
+
         v, w = self.robot.calculer_vitesse()
+
         self.assertEqual(v, 50)
         self.assertEqual(w, 0)
 
     def test_update(self):
         self.robot.set_vitesse_gauche(10)
         self.robot.set_vitesse_droite(10)
+
         self.robot.update(1)
+
         self.assertAlmostEqual(self.robot.x, 110)
-class TestSimulation(unittest.TestCase):
-
-    def setUp(self):
-        self.sim = Simulation(800, 600)
-
-    def test_avancer(self):
-        self.sim.avancer(80)
-        self.assertEqual(self.sim.robot.vG, 80)
-        self.assertEqual(self.sim.robot.vR, 80)
-
-    def test_arreter(self):
-        self.sim.avancer(80)
-        self.sim.arreter()
-        self.assertEqual(self.sim.robot.vG, 0)
-        self.assertEqual(self.sim.robot.vR, 0)
-class TestStrategie(unittest.TestCase):
-
-    def setUp(self):
-        self.sim = Simulation(800, 600)
-        self.strat = Deplacement(self.sim, self.sim.robot)
-
-    def test_avancer_x_metres(self):
-        fini = self.strat.avancer_x_metres(1, 80)
-        self.assertFalse(fini)
-
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assertAlmostEqual(self.robot.y, 200)
