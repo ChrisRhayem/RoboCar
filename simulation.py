@@ -126,6 +126,38 @@ class Simulation:
                 min_dist = min(min_dist, max(0, dist))
 
         return min_dist
+    def distance_cote_droite(self, max_range=60):
+        """
+        Calcule la distance libre sur le cote droit du robot
+        Cette fonction sert a savoir si le robot peut tourner a droite
+        """
+
+        angle_droite = self.robot.angle + math.pi / 2
+        dir_x = math.cos(angle_droite)
+        dir_y = math.sin(angle_droite)
+
+        side_x = self.robot.x + dir_x * max_range
+        side_y = self.robot.y + dir_y * max_range
+
+        dist_x = min(side_x, self.largeur - side_x)
+        dist_y = min(side_y, self.hauteur - side_y)
+        min_dist = min(dist_x, dist_y)
+
+        for obs in self.obstacles:
+            cx = obs.pos[0] + obs.dim[0] / 2
+            cy = obs.pos[1] + obs.dim[1] / 2
+
+            dx = cx - self.robot.x
+            dy = cy - self.robot.y
+
+            projection = dx * dir_x + dy * dir_y
+
+            if 0 < projection < max_range:
+                dist = math.sqrt(dx*2 + dy*2) - max(obs.dim) / 2
+                min_dist = min(min_dist, max(0, dist))
+
+        return min_dist
+    
     def distance_mur(self, max_range=120):
         """
         Calcule la distance au mur devant le robot 
