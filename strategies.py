@@ -101,3 +101,18 @@ class Reculer:
             return True
 
         return False
+
+
+class EviterObstacles:
+    """
+    Strategie principale d'evitement des obstacles le robot detecte les obstacles devant lui choisit la direction avec le plus d'espace
+    et tourne dans cette direction
+    """
+
+    def __init__(self, simulation, vitesse_avance=80, vitesse_tourne=60, seuil=50):
+
+        self.sim = simulation
+        self.vitesse_avance = vitesse_avance
+        self.vitesse_tourne = vitesse_tourne
+        self.seuil = seuil # distance a partir de laquelle on considere qu'un obstacle est proche
+        self.direction = None  # direction choisie pour contourner
