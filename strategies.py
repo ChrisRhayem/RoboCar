@@ -23,7 +23,7 @@ class AvancerXMetres:
 
         if self.terminee:
             return True
-        distance_pixels = self.distance * 100  # conversion de metres en pixels 
+        distance_pixels = self.distance * 100  # conversion de metres en pixels (1 metre=100 pixels)
         if self.depart is None:
             self.depart = (self.sim.robot.x, self.sim.robot.y) # on memorise la position de depart la premiere fois
 
