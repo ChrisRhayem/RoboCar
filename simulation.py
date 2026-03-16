@@ -12,9 +12,13 @@ class Simulation:
     def __init__(self, largeur, hauteur):
         self.robot = RoboCar("Flash", (400, 300), 0) # creation du robot au centre de la fenetre
         # liste des obstacles presents dans l'environnement
+        obsi=Obstacle("rectangle", (100, 100), (80, 100))
+        obsi.pos_aleatoire()
+        obsa=Obstacle("rectangle", (500, 200), (100, 50))
+        obsa.pos_aleatoire()
         self.obstacles = [
-            Obstacle("rectangle", (100, 100), (80, 100)),
-            Obstacle("rectangle", (500, 200), (100, 50)),
+            obsi,
+            obsa,
             Obstacle("rectangle", (300, 450), (50, 50)),
         ]
         # dimensions du monde

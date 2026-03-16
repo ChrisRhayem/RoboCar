@@ -3,99 +3,85 @@ import math
 
 class AvancerXMetres:
     """
-    Strategie qui fait avancer le robot d'une distance donnee
-    Le robot avance jusqu'a ce que la distance parcourue atteigne la distance demandee (en metres)
+    Fait avancer le robot d'une distance donnée.
     """
 
     def __init__(self, simulation, distance, vitesse, marge_mur=35):
-        self.sim = simulation      # reference vers la simulation 
-        self.distance = distance   # distance a parcourir en metres
-        self.vitesse = vitesse     # vitesse des roues
-        self.marge_mur = marge_mur # distance minimale autorisee avec un mur
+        self.sim = simulation
+        self.distance = distance
+        self.vitesse = vitesse
+        self.marge_mur = marge_mur
+        self.depart = None
+        self.terminee = False
 
-        self.depart = None         # position de depart du robot
-        self.terminee = False      # indique si la strategie est terminee
+    def reset(self, distance=None, vitesse=None):
+        if distance is not None:
+            self.distance = distance
+        if vitesse is not None:
+            self.vitesse = vitesse
+        self.depart = None
+        self.terminee = False
 
     def update(self, dt):
-        """
-        Fonction appelee a chaque frame qui fait avancer le robot et verifie si la distance demandee a ete parcourue
-        """
-
         if self.terminee:
             return True
-        distance_pixels = self.distance * 100  # conversion de metres en pixels 
-        if self.depart is None:
-            self.depart = (self.sim.robot.x, self.sim.robot.y) # on memorise la position de depart la premiere fois
 
-        if self.sim.distance_mur(max_range=60) < self.marge_mur: #si on est trop proche d'un mur on arrete
+        distance_pixels = self.distance * 100
+
+        if self.depart is None:
+            self.depart = (self.sim.robot.x, self.sim.robot.y)
+
+        if self.sim.distance_mur(max_range=60) < self.marge_mur:
             self.sim.freiner(dt)
             self.terminee = True
             return True
 
-        self.sim.avancer(self.vitesse) # on fait avancer le robot
+        self.sim.avancer(self.vitesse)
 
-        # calcul de la distance parcourue depuis le depart
         dx = self.sim.robot.x - self.depart[0]
         dy = self.sim.robot.y - self.depart[1]
         distance_parcourue = math.sqrt(dx**2 + dy**2)
 
-        # si on a atteint la distance voulue
         if distance_parcourue >= distance_pixels:
             self.sim.freiner(dt)
             self.terminee = True
             return True
 
         return False
-class FreinageProgressif:
-    """
-    Strategie qui ralentit progressivement le robot jusqu'a ce qu'il soit completement arrete
-    """
 
-    def __init__(self, simulation):
-        self.sim = simulation
-
-    def update(self, dt):
-        self.sim.freiner(dt)  # on applique le freinage progressif
-        vG, vR = self.sim.robot.get_wheel_speeds() # on recupere la vitesse des deux roues
-        return abs(vG) < 1 and abs(vR) < 1 # si les vitesses sont presque nulles alors le robot est arrete
 
 class Reculer:
     """
-    Strategie qui fait reculer le robot sur une distance donnee qui est utilisee quand le robot est bloque
+    Fait reculer le robot sur une petite distance.
     """
 
-    def __init__(self, simulation, vitesse=50, distance=0.4):
-
+    def __init__(self, simulation, vitesse=45, distance=0.3):
         self.sim = simulation
-        self.vitesse = vitesse # vitesse a laquelle le robot va reculer
-        self.distance = distance #distance que le robot doit reculer
-        self.depart = None #position de depart du robot quand la strategie commence
-        self.actif = False #booleen qui indique si la strategie est active
+        self.vitesse = vitesse
+        self.distance = distance
+        self.depart = None
+        self.actif = False
 
     def declencher(self):
-        """
-        Lance la strategie de recule
-        """
         self.depart = None
         self.actif = True
 
     def update(self, dt):
-
-        # si la strategie n'est pas active
         if not self.actif:
             return True
+
         distance_pixels = self.distance * 100
-        if self.depart is None: 
-            self.depart = (self.sim.robot.x, self.sim.robot.y)  # memorisation de la position de départ
 
-        self.sim.reculer(self.vitesse)  # on fait reculer le robot
+        if self.depart is None:
+            self.depart = (self.sim.robot.x, self.sim.robot.y)
 
-        # calcul distance parcourue
+        self.sim.reculer(self.vitesse)
+
         dx = self.sim.robot.x - self.depart[0]
         dy = self.sim.robot.y - self.depart[1]
         distance_parcourue = math.sqrt(dx**2 + dy**2)
 
-        if distance_parcourue >= distance_pixels: # si la distance est atteinte
+        if distance_parcourue >= distance_pixels:
             self.sim.freiner(dt)
             self.actif = False
             return True
@@ -103,104 +89,164 @@ class Reculer:
         return False
 
 
-class EviterObstacles:
+class TournerPendant:
     """
-    Strategie principale d'evitement des obstacles le robot detecte les obstacles devant lui choisit la direction avec le plus d'espace
-    et tourne dans cette direction
+    Tourne pendant un temps donné.
+    Sens = "gauche" ou "droite"
     """
 
-    def __init__(self, simulation, vitesse_avance=80, vitesse_tourne=60, seuil=50):
-
+    def __init__(self, simulation, duree, vitesse, sens):
         self.sim = simulation
-        self.vitesse_avance = vitesse_avance
-        self.vitesse_tourne = vitesse_tourne
-        self.seuil = seuil # distance a partir de laquelle on considere qu'un obstacle est proche
-        self.direction = None  # direction choisie pour contourner
+        self.duree = duree
+        self.vitesse = vitesse
+        self.sens = sens
+        self.temps_restant = duree
+        self.terminee = False
+
+    def reset(self, duree=None, vitesse=None, sens=None):
+        if duree is not None:
+            self.duree = duree
+        if vitesse is not None:
+            self.vitesse = vitesse
+        if sens is not None:
+            self.sens = sens
+        self.temps_restant = self.duree
+        self.terminee = False
 
     def update(self, dt):
-        dist_obs = self.sim.distance_obstacle(max_range=140)  # distance a l'obstacle devant
-        dist_mur = self.sim.distance_mur(max_range=70) # distance au mur devant
-        # distances sur les cotes
-        dist_gauche = self.sim.distance_cote_gauche(max_range=60)
-        dist_droite = self.sim.distance_cote_droite(max_range=60)
-        # on prend la distance la plus dangereuse
-        distance = min(dist_obs, dist_mur)
-    
-        if distance < self.seuil:  # obstacle detecte devant
+        if self.terminee:
+            return True
 
-          
-            if self.direction is None:  # on choisit une direction si ce n'est pas deja fait
-                if dist_gauche > dist_droite:  # on choisit le cote avec le plus d'espace
-                    self.direction = "gauche"
-                else:
-                    self.direction = "droite"
+        self.temps_restant -= dt
 
-            # rotation selon la direction choisie
-            if self.direction == "gauche":
-                self.sim.tourner_gauche(self.vitesse_tourne)
-            else:
-                self.sim.tourner_droite(self.vitesse_tourne)
-
+        if self.sens == "gauche":
+            self.sim.tourner_gauche(self.vitesse)
         else:
-            # si aucun obstacle alors on avance
-            self.direction = None
-            self.sim.avancer(self.vitesse_avance)
+            self.sim.tourner_droite(self.vitesse)
+
+        if self.temps_restant <= 0:
+            self.sim.freiner(dt)
+            self.terminee = True
+            return True
+
+        return False
+
+
+class ContournerObstacle:
+    """
+    Manœuvre complète de contournement.
+
+    Étapes :
+    1. choisir un côté
+    2. tourner
+    3. avancer pour se décaler
+    4. re-tourner pour revenir parallèle
+    5. avancer pour dépasser l'obstacle
+    """
+
+    def __init__(self, simulation):
+        self.sim = simulation
+        self.phase = "INACTIVE"
+        self.direction = None
+
+        self.tourne1 = TournerPendant(simulation, duree=0.6, vitesse=60, sens="gauche")
+        self.avance1 = AvancerXMetres(simulation, distance=0.5, vitesse=55)
+        self.tourne2 = TournerPendant(simulation, duree=0.6, vitesse=60, sens="droite")
+        self.avance2 = AvancerXMetres(simulation, distance=0.9, vitesse=60)
+
+    def declencher(self):
+        dist_gauche = self.sim.distance_cote_gauche(max_range=80)
+        dist_droite = self.sim.distance_cote_droite(max_range=80)
+
+        if dist_gauche > dist_droite:
+            self.direction = "gauche"
+            self.tourne1.reset(sens="gauche")
+            self.tourne2.reset(sens="droite")
+        else:
+            self.direction = "droite"
+            self.tourne1.reset(sens="droite")
+            self.tourne2.reset(sens="gauche")
+
+        self.avance1.reset(distance=0.5, vitesse=55)
+        self.avance2.reset(distance=0.9, vitesse=60)
+
+        self.phase = "TOURNE_1"
+
+    def update(self, dt):
+        if self.phase == "INACTIVE":
+            return True
+
+        elif self.phase == "TOURNE_1":
+            fini = self.tourne1.update(dt)
+            if fini:
+                self.phase = "AVANCE_1"
+
+        elif self.phase == "AVANCE_1":
+            fini = self.avance1.update(dt)
+            if fini:
+                self.phase = "TOURNE_2"
+
+        elif self.phase == "TOURNE_2":
+            fini = self.tourne2.update(dt)
+            if fini:
+                self.phase = "AVANCE_2"
+
+        elif self.phase == "AVANCE_2":
+            fini = self.avance2.update(dt)
+            if fini:
+                self.phase = "INACTIVE"
+                return True
 
         return False
 
 
 class GestionStrategies:
     """
-    Classe qui gere toutes les strategies du robot
+    Gère toutes les stratégies du robot.
     """
 
     def __init__(self, simulation):
-
         self.sim = simulation
-        # differentes strategies disponibles
-        self.avance_depart = AvancerXMetres(simulation, distance=1, vitesse=80)
-        self.freinage = FreinageProgressif(simulation)
-        self.recul = Reculer(simulation, vitesse=50, distance=0.4)
-        self.evitement = EviterObstacles(simulation, vitesse_avance=80, vitesse_tourne=60, seuil=50)
 
-        self.phase = "DEPART" # etat actuel du robot
+        self.depart = AvancerXMetres(simulation, distance=1, vitesse=80)
+        self.recul = Reculer(simulation, vitesse=45, distance=0.3)
+        self.contournement = ContournerObstacle(simulation)
+
+        self.phase = "DEPART"
 
     def update(self, dt):
-        """
-        Fonction appelee a chaque frame qui choisit quelle strategie appliquer
-        """
-        if self.phase == "DEPART": # phase de depart
-
-            fini = self.avance_depart.update(dt)
-
+        if self.phase == "DEPART":
+            fini = self.depart.update(dt)
             if fini:
-                self.phase = "EVITEMENT"
-        elif self.phase == "RECUL":  # phase de recul
+                self.phase = "NORMAL"
 
+        elif self.phase == "RECUL":
             fini = self.recul.update(dt)
-
             if fini:
-                self.phase = "EVITEMENT"
-        elif self.phase == "FREINAGE":  # phase de freinage
+                self.phase = "NORMAL"
 
-            fini = self.freinage.update(dt)
-
+        elif self.phase == "CONTOURNEMENT":
+            fini = self.contournement.update(dt)
             if fini:
-                self.phase = "EVITEMENT"
-        elif self.phase == "EVITEMENT": # phase principale : evitement
+                self.phase = "NORMAL"
 
-            dist_obs = self.sim.distance_obstacle(max_range=140)
+        elif self.phase == "NORMAL":
+            dist_obs = self.sim.distance_obstacle(max_range=150)
             dist_mur = self.sim.distance_mur(max_range=70)
-
             dist_gauche = self.sim.distance_cote_gauche(max_range=60)
             dist_droite = self.sim.distance_cote_droite(max_range=60)
-            if min(dist_obs, dist_mur) < 20 and dist_gauche < 25 and dist_droite < 25:  # si on est completement bloque
 
+            distance = min(dist_obs, dist_mur)
+
+            # Si vraiment coincé : reculer
+            if distance < 20 and dist_gauche < 25 and dist_droite < 25:
                 self.recul.declencher()
                 self.phase = "RECUL"
-            elif self.sim.a_collision: # si collision detectee
 
-                self.phase = "FREINAGE"
+            # Si obstacle proche devant : lancer une vraie manœuvre
+            elif distance < 55:
+                self.contournement.declencher()
+                self.phase = "CONTOURNEMENT"
 
-            else: # sinon on applique l'evitement
-                self.evitement.update(dt)
+            else:
+                self.sim.avancer(65)
