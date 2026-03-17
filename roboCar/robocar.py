@@ -39,14 +39,14 @@ class RoboCar:
     def avancer(self, vitesse):
         """Fait avancer le robot tout droit.
         """
-        self.robot.set_vitesse_gauche(vitesse) #les deux roues doivent avoir la memee vitesse pour avancer en ligne droite
-        self.robot.set_vitesse_droite(vitesse)
+        self.set_vitesse_gauche(vitesse) #les deux roues doivent avoir la memee vitesse pour avancer en ligne droite
+        self.set_vitesse_droite(vitesse)
 
     def reculer(self, vitesse):
         """Fait reculer le robot
         """
-        self.robot.set_vitesse_gauche(-vitesse)
-        self.robot.set_vitesse_droite(-vitesse)
+        self.set_vitesse_gauche(-vitesse)
+        self.set_vitesse_droite(-vitesse)
            
     def tourner_sur_place(self, vitesse):
         """Fait tourner le robot sur lui-même
