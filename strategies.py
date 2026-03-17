@@ -21,16 +21,13 @@ class AvancerXMetres:
         Fonction appelee a chaque frame qui fait avancer le robot et verifie si la distance demandee a ete parcourue
         """
 
+        #Transformer en fonction
         if self.terminee:
+            self.robot.avanceer(0)
             return True
         distance_pixels = self.distance * 100  # conversion de metres en pixels 
         if self.depart is None:
             self.depart = (self.sim.robot.x, self.sim.robot.y) # on memorise la position de depart la premiere fois
-
-        if self.sim.distance_mur(max_range=60) < self.marge_mur: #si on est trop proche d'un mur on arrete
-            self.sim.freiner(dt)
-            self.terminee = True
-            return True
 
         self.sim.avancer(self.vitesse) # on fait avancer le robot
 
@@ -39,7 +36,7 @@ class AvancerXMetres:
         dy = self.sim.robot.y - self.depart[1]
         distance_parcourue = math.sqrt(dx**2 + dy**2)
 
-        # si on a atteint la distance voulue
+        # si on a atteint la distance voulue (serait replacer dans la fonction terminee)
         if distance_parcourue >= distance_pixels:
             self.sim.freiner(dt)
             self.terminee = True
