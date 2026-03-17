@@ -23,13 +23,13 @@ class AvancerXMetres:
 
         #Transformer en fonction
         if self.terminee:
-            self.robot.avanceer(0)
+            self.sim.robot.avancer(0)
             return True
         distance_pixels = self.distance * 100  # conversion de metres en pixels 
         if self.depart is None:
             self.depart = (self.sim.robot.x, self.sim.robot.y) # on memorise la position de depart la premiere fois
 
-        self.sim.avancer(self.vitesse) # on fait avancer le robot
+        self.sim.robot.avancer(self.vitesse) # on fait avancer le robot
 
         # calcul de la distance parcourue depuis le depart
         dx = self.sim.robot.x - self.depart[0]
@@ -38,7 +38,7 @@ class AvancerXMetres:
 
         # si on a atteint la distance voulue (serait replacer dans la fonction terminee)
         if distance_parcourue >= distance_pixels:
-            self.sim.freiner(dt)
+            self.sim.robot.freiner(dt)
             self.terminee = True
             return True
 
@@ -88,7 +88,7 @@ class Reculer:
         if self.depart is None: 
             self.depart = (self.sim.robot.x, self.sim.robot.y)  # memorisation de la position de départ
 
-        self.sim.reculer(self.vitesse)  # on fait reculer le robot
+        self.sim.robot.reculer(self.vitesse)  # on fait reculer le robot
 
         # calcul distance parcourue
         dx = self.sim.robot.x - self.depart[0]
@@ -96,7 +96,7 @@ class Reculer:
         distance_parcourue = math.sqrt(dx**2 + dy**2)
 
         if distance_parcourue >= distance_pixels: # si la distance est atteinte
-            self.sim.freiner(dt)
+            self.sim.robot.freiner(dt)
             self.actif = False
             return True
 
@@ -130,16 +130,16 @@ class EviterObstacles:
     def tourner_direction(self):
         """Applique une rotation selon la direction choisie"""
         if self.direction == "gauche":
-            self.sim.tourner_gauche(self.vitesse_tourne)
+            self.sim.robot.tourner_gauche(self.vitesse_tourne)
         else:
-            self.sim.tourner_droite(self.vitesse_tourne)
+            self.sim.robot.tourner_droite(self.vitesse_tourne)
 
     def agir_si_proche(self, distance, dist_gauche, dist_droite, dt):
         """Agit si un obstacle est détecté à une distance inférieure à la distance de sécurité"""
         self.choisir_direction(dist_gauche, dist_droite) #choisir la direction selon l'espace disponible
         d_sec = self.distance_securite(dt) #calculer la distance de sécurité nécessaire selon la vitesse et le temps
         if distance < d_sec * 0.5: # si l'obstacle est très proche
-            self.sim.reculer(self.vitesse_avance * 0.6) #flash recule un peu pour se dégager
+            self.sim.robot.reculer(self.vitesse_avance * 0.6) #flash recule un peu pour se dégager
             return True
         if distance < d_sec : # si l'obstacle est proche mais pas critique
             self.tourner_direction() #flash tourne dans la direction choisie
@@ -160,7 +160,7 @@ class EviterObstacles:
 
         # si aucun obstacle alors on avance
         self.direction = None
-        self.sim.avancer(self.vitesse_avance)
+        self.sim.robot.avancer(self.vitesse_avance)
         return False
 
 #Il faut changer ça pour les strategies sequencielles
