@@ -138,48 +138,53 @@ class EviterObstacles:
     
     def stop(self):
         return False
-    
 
-
-
-
-    
-
-    def update(self, dt):
-        dist_obs = self.sim.distance_obstacle(max_range=200)  # distance a l'obstacle devant
-        dist_mur = self.sim.distance_mur(max_range=120) # distance au mur devant
-        # distances sur les cotes
-        dist_gauche = self.sim.distance_cote_gauche(max_range=60)
-        dist_droite = self.sim.distance_cote_droite(max_range=60)
-        # on prend la distance la plus dangereuse
-        distance = min(dist_obs, dist_mur)
-    
-        if self.agir_si_proche(distance, dist_gauche, dist_droite, dt):
-            return False
-
-        # si aucun obstacle alors on avance
-        self.direction = None
-        self.sim.robot.avancer(self.vitesse_avance)
-        return False
-
-#Il faut changer ça pour les strategies sequencielles
 class GestionStrategies:
     """
     Classe qui gere toutes les strategies du robot
     """
-
-    def __init__(self, simulation):
-
+    def _init_(self, simulation):
         self.sim = simulation
-        # differentes strategies disponibles
-        self.avance_depart = AvancerXMetres(simulation, distance=1, vitesse=80)
-        #self.freinage = FreinageProgressif(simulation)
+        self.strats = [
+            AvancerXMetres(simulation, distance=1, vitesse=80),
+            EviterObstacles(simulation, vitesse_avance=80, vitesse_tourne=60, seuil=80),
+        ]
         self.recul = Reculer(simulation, vitesse=50, distance=0.4)
-        self.evitement = EviterObstacles(simulation, vitesse_avance=80, vitesse_tourne=60, seuil=80)
+        self.cur = -1
+        self.mode_collision = False
 
-        self.phase = "DEPART" # etat actuel du robot
+    def start(self):
+        self.cur = -1
+        self.mode_collision = False
 
-    #C'est mieux de calculer dt ici que l'avoir comme parametre
+    def step(self):
+        if self.stop():
+            return
+
+        if self.mode_collision:
+            if self.recul.stop():
+                self.sim.robot.arreter()
+                self.mode_collision = False
+                return
+            self.recul.step()
+            return
+
+        if self.sim.a_collision:
+            self.mode_collision = True
+            self.recul.start()
+            self.recul.step()
+            return
+
+        if self.cur < 0 or self.strats[self.cur].stop():
+            self.cur += 1
+            if self.cur >= len(self.strats):
+                return
+            self.strats[self.cur].start()
+        self.strats[self.cur].step()
+
+    
+
+
     def update(self, dt):
         """
         Fonction appelee a chaque frame qui choisit quelle strategie appliquer
