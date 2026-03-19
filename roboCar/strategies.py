@@ -95,12 +95,30 @@ class EviterObstacles:
     def start(self):
         self.direction = None
         pass
-    
+
     def choisir_direction(self, dist_gauche, dist_droite):
         """Choisit la direction avec le plus d'espace"""
         if self.direction is None:
             self.direction = "gauche" if dist_gauche > dist_droite else "droite"
     
+    def tourner_direction(self):
+        """Applique une rotation selon la direction choisie"""
+        if self.direction == "gauche":
+            self.sim.robot.tourner_gauche(self.vitesse_tourne)
+        else:
+            self.sim.robot.tourner_droite(self.vitesse_tourne)
+    
+    def agir_si_proche(self, distance, dist_gauche, dist_droite):
+        """Agit si un obstacle est détecté à une distance inférieure à la distance de sécurité"""
+        self.choisir_direction(dist_gauche, dist_droite) #choisir la direction selon l'espace disponible
+        d_sec = max(self.seuil, self.sim.robot.longueur / 2)
+        if distance < d_sec * 0.5: # si l'obstacle est très proche
+            self.sim.robot.reculer(self.vitesse_avance * 0.6) #flash recule un peu pour se dégager
+            return True
+        if distance < d_sec : # si l'obstacle est proche mais pas critique
+            self.tourner_direction() #flash tourne dans la direction choisie
+            return True
+        return False #si l'obstacle est suffisamment loin, aucune action n'est nécessaire
 
 
 
@@ -111,29 +129,9 @@ class EviterObstacles:
         #un seuil fixe; une marge liée à la vitesse et au temps de réaction; la demi-longueur du robot pour éviter le contact
         return max(self.seuil, self.vitesse_avance * dt * 2.5 + self.sim.robot.longueur/2) 
     
-    def choisir_direction(self, dist_gauche, dist_droite):
-        """Choisit la direction avec le plus d'espace"""
-        if self.direction is None:
-            self.direction = "gauche" if dist_gauche > dist_droite else "droite"
 
-    def tourner_direction(self):
-        """Applique une rotation selon la direction choisie"""
-        if self.direction == "gauche":
-            self.sim.robot.tourner_gauche(self.vitesse_tourne)
-        else:
-            self.sim.robot.tourner_droite(self.vitesse_tourne)
 
-    def agir_si_proche(self, distance, dist_gauche, dist_droite, dt):
-        """Agit si un obstacle est détecté à une distance inférieure à la distance de sécurité"""
-        self.choisir_direction(dist_gauche, dist_droite) #choisir la direction selon l'espace disponible
-        d_sec = self.distance_securite(dt) #calculer la distance de sécurité nécessaire selon la vitesse et le temps
-        if distance < d_sec * 0.5: # si l'obstacle est très proche
-            self.sim.robot.reculer(self.vitesse_avance * 0.6) #flash recule un peu pour se dégager
-            return True
-        if distance < d_sec : # si l'obstacle est proche mais pas critique
-            self.tourner_direction() #flash tourne dans la direction choisie
-            return True
-        return False #si l'obstacle est suffisamment loin, aucune action n'est nécessaire
+    
 
     def update(self, dt):
         dist_obs = self.sim.distance_obstacle(max_range=200)  # distance a l'obstacle devant
