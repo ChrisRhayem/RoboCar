@@ -92,6 +92,12 @@ class EviterObstacles:
         self.seuil = seuil # distance a partir de laquelle on considere qu'un obstacle est proche
         self.direction = None  # direction choisie pour contourner
 
+    def start(self):
+        self.direction = None
+        pass
+    
+
+
     def distance_securite(self,dt):
         """Calcule la distance minimale à garder avant d'agir"""
         #un seuil fixe; une marge liée à la vitesse et au temps de réaction; la demi-longueur du robot pour éviter le contact
