@@ -22,7 +22,6 @@ class Simulation:
         self.hauteur = hauteur
         self.a_collision = False # booleen indiquant si le robot a rencontre un obstacle
 
-    #discuter si distance avec les autres si distance reste la ou on RoboCar
     def distance_obstacle(self, max_range=140): #max_range c'est la portee maximale du capteur (en pixels)
         """
         Calcule la distance au plus proche obstacle devant le robot
