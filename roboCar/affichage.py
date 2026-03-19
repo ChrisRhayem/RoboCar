@@ -47,9 +47,7 @@ class Affichage:
 
         for obs in obstacles:
             pygame.draw.rect(self.screen, (200, 0, 0), (*obs.pos, *obs.dim))
-
-    #changer pour Stratégie Séquentielle et pas condionitielle
-    def update(self, robot, obstacles, dt):
+    def update(self, robot, obstacles):
         """Met a jour l'affichage et gere les evenements"""
 
         running = True
