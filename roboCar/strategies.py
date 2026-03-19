@@ -149,7 +149,7 @@ class GestionStrategies:
         self.sim = simulation
         # differentes strategies disponibles
         self.avance_depart = AvancerXMetres(simulation, distance=1, vitesse=80)
-        self.freinage = FreinageProgressif(simulation)
+        #self.freinage = FreinageProgressif(simulation)
         self.recul = Reculer(simulation, vitesse=50, distance=0.4)
         self.evitement = EviterObstacles(simulation, vitesse_avance=80, vitesse_tourne=60, seuil=80)
 
