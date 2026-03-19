@@ -46,3 +46,10 @@ Nous avons également constaté que le fichier main.py contenait trop de respons
 L’affichage sera séparé et placé dans une classe dédiée
 Cette organisation permettra de mieux séparer les différentes parties du programme : logique du robot, stratégies de comportement et affichage
 Notre objectif pour la prochaine séance est d’obtenir un code mieux organisé, réparti dans plusieurs fichiers et classes, et d’ajouter des fonctions update afin de gérer les mises à jour de la simulation
+
+Semaine 9 :
+Durant la seance 7 nous avons analysé la gestion du temps dans notre programme en particulier la variable dt utilisée dans le fichier main.py 
+Nous avons constaté que son utilisation n’était pas efficace ,nous avons donc décidé de limiter son usage directement dans les fonctions qui en ont besoin (localement)
+Par ailleurs,nous avons étudié différentes approches pour gérer les stratégies de comportement du robot
+Nous avons conclu qu'il faut utiliser lesstratégies asynchrones et séquentielles pour organiser et contrôler les actions du robot de manière plus efficace
+Notre objectif pour la prochaine séance est de mettre en place ces nouvelles approches puis de commencer le développement d’un système de traduction entre le robot simulé et le robot réel
