@@ -172,10 +172,10 @@ class Simulation:
                 return True
         return False
 
-    def update(self, dt):
+    def update(self):
         """Met a jour la simulation"""
         old_state = (self.robot.x, self.robot.y)
-        self.robot.update(dt) # mise a jour physique du robot
+        self.robot.update() # mise a jour physique du robot
         self.appliquer_murs() # on verifie les bords de la fenetre
         self.a_collision = self.resoudre_collisions(old_state)  # on verifie collisions avec obstacles
         return self.a_collision
