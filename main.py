@@ -3,7 +3,7 @@ from roboCar import Simulation, GestionStrategies, Affichage
 
 LARGEUR = 800
 HAUTEUR = 600
-FPS = 60
+FPS = 180
 
 affichage = Affichage(LARGEUR, HAUTEUR)
 sim = Simulation(LARGEUR, HAUTEUR)
@@ -24,3 +24,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

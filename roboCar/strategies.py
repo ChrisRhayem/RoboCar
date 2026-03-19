@@ -1,6 +1,5 @@
 import math
 
-
 class AvancerXMetres:
     """
     Strategie qui fait avancer le robot d'une distance donnee
