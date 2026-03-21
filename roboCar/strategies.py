@@ -35,21 +35,46 @@ class AvancerXMetres:
         distance_parcourue = math.sqrt(dx**2 + dy**2)
         return distance_parcourue >= distance_pixels
     
-#Il faut creer une nouvelle classe TournerXDegree
 class TournerXDegrees:
-    """ Strategie qui fait tourner le robot d'un angle donnee
-    Le robot tourne jusqu'a ce que la distance parcourue atteigne la distance demandee (en metres)
+    """ Strategie qui fait tourner le robot d'un angle X donnee
+    Le robot tourne jusqu'a ce que la distance parcourue atteigne la distance demandee
     """
     
-    def __init__(self, simulation):
-        pass
+    def __init__(self,simulation,angle,vitesse):
+        self.sim = simulation # reference vers la simulation
+        self.angle = angle # distance a parcourir en degree
+        self.vitesse = vitesse # vitesse des roues
+
+        self.depart = None #position de depart du robot
+        
+    def start(self):
+        self.depart = None
+        
+    def step(self):
+        if self.depart is None:
+            self.depart = self.sim.robot.angle
+            
+        if self.stop():
+            self.sim.robot.arreter()
+            return
+        
+        self.sim.robot.tourner_sur_place(self.vitesse)
+        
+    def stop(self):
+        if self.depart is None:
+            return False
+        
+        dangle = self.sim.robot.angle + self.depart
+        distance_parcourue =  self.sim.robot.angle - self.depart
+        return distance_parcourue >= dangle
+        
+        
 class Reculer:
     """
     Strategie qui fait reculer le robot sur une distance donnee qui est utilisee quand le robot est bloque
     """
 
     def __init__(self, simulation, vitesse=50, distance=0.4):
-
         self.sim = simulation
         self.vitesse = vitesse # vitesse a laquelle le robot va reculer
         self.distance = distance #distance que le robot doit reculer
@@ -72,6 +97,7 @@ class Reculer:
         distance_pixels = self.distance * 100
         if self.depart is None:
             return False
+        
         dx = self.sim.robot.x - self.depart[0]
         dy = self.sim.robot.y - self.depart[1]
         distance_parcourue = math.sqrt(dx**2 + dy**2)
@@ -146,6 +172,7 @@ class GestionStrategies:
         self.sim = simulation
         self.strats = [
             AvancerXMetres(simulation, distance=1, vitesse=80),
+            TournerXDegrees(simulation, angle=90, vitesse=80),
             EviterObstacles(simulation, vitesse_avance=80, vitesse_tourne=60, seuil=80),
         ]
         self.recul = Reculer(simulation, vitesse=50, distance=0.4)

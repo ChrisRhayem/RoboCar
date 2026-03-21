@@ -48,6 +48,12 @@ class RoboCar:
         """
         self.set_vitesse_gauche(-vitesse)
         self.set_vitesse_droite(-vitesse)
+        
+    def arreter(self): #deceleration correspond a l'intensite du freinage
+        """Reduit la vitesse du robot à 0
+        """
+        self.set_vitesse_droite(0)
+        self.set_vitesse_gauche(0)
            
     def tourner_sur_place(self, vitesse):
         """Fait tourner le robot sur lui-même
@@ -67,14 +73,7 @@ class RoboCar:
         Fait tourner le robot vers la droite 
         """
         self.set_vitesse_gauche(0)
-        self.set_vitesse_droite(vitesse)
-        
-    def arreter(self): #deceleration correspond a l'intensite du freinage
-        """Reduit la vitesse du robot à 0
-        """
-        self.set_vitesse_droite(0)
-        self.set_vitesse_gauche(0)
-        
+        self.set_vitesse_droite(vitesse)  
 
     def update(self):
         """Mise a jour du robot"""
