@@ -13,7 +13,7 @@ class RoboCar:
         self.vG = 0 #vitesse roue gauche
         self.vR = 0 #vitesse roue droite
         self.largeur = 40   # largeur (cote roues)
-        self.longueur = 60  # longueur (avant/arriere)
+        self.longueur = 50  # longueur (avant/arriere)
         self._last_update = None
         
     def get_state(self):

@@ -1,5 +1,4 @@
-from roboCar import Simulation, GestionStrategies, Affichage
-
+from Source import Simulation, GestionStrategies, Affichage
 
 LARGEUR = 800
 HAUTEUR = 600

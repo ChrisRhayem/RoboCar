@@ -1,6 +1,6 @@
 import math
-from roboCar.robocar import RoboCar
-from roboCar.obstacle import Obstacle
+from .robocar import RoboCar
+from .obstacle import Obstacle
 
 
 class Simulation:
