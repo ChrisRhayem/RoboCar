@@ -63,10 +63,10 @@ class TournerXDegrees:
     def stop(self):
         if self.depart is None:
             return False
-        
-        dangle = self.sim.robot.angle + self.depart
-        distance_parcourue =  self.sim.robot.angle - self.depart
-        return distance_parcourue >= dangle
+
+        angle_voulu = math.radians(self.angle)
+        angle_parcouru = abs(self.sim.robot.angle - self.depart)
+        return angle_parcouru >= angle_voulu
         
         
 class Reculer:
