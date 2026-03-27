@@ -1,33 +1,32 @@
 import math
-import time
 from .adaptateur import Adaptateur
 
 
 class AdaptateurSimule(Adaptateur):
     """
-    Adaptateur entre les strategies et le Robot2IN013_MOCK
-    cet adaptateur garde une position simulee pour que la simulation pygame fonctionne
+    Adaptateur pour utiliser un robot mock dans la simulation
+    Il garde aussi les infos de position pour pygame
     """
 
+    WHEEL_BASE_WIDTH = 117  # distance entre roues
+
     def __init__(self, robot, nom="Flash", coordonnees=(400, 300), angle=0):
-        self.robot = robot
+        self.robot = robot  # robot mock
         self.nom = nom
+        # position du robot dans la simulation
         self.x, self.y = coordonnees
         self.angle = math.radians(angle)
-
+        # vitesses des roues
         self.vG = 0
         self.vR = 0
-
         self.largeur = 40
         self.longueur = 50
 
-        self._last_update = None
-
     def initialise(self):
+        """reset des encodeurs moteurs"""
         pos_g, pos_d = self.robot.get_motor_position()
         self.robot.offset_motor_encoder(self.robot.MOTOR_LEFT, pos_g)
         self.robot.offset_motor_encoder(self.robot.MOTOR_RIGHT, pos_d)
-        self._last_update = None
 
     def get_position(self):
         return self.x, self.y
@@ -35,11 +34,11 @@ class AdaptateurSimule(Adaptateur):
     def get_angle(self):
         return self.angle
 
-    #pas la meme chose que get_motor_position()? Pas droit de l'utiliser pour distance//dynamique
     def get_wheel_speeds(self):
         return self.vG, self.vR
 
     def set_vitesse_gauche(self, vitesse):
+        """met a jour vitesse interne et envoie au robot"""
         self.vG = vitesse
         self.robot.set_motor_dps(self.robot.MOTOR_LEFT, vitesse)
 
@@ -47,18 +46,8 @@ class AdaptateurSimule(Adaptateur):
         self.vR = vitesse
         self.robot.set_motor_dps(self.robot.MOTOR_RIGHT, vitesse)
 
-    #Pas bon :(
-    def calculer_vitesse(self):
-        """
-        On garde la meme logique que RoboCar :
-        v = vitesse linéaire moyenne
-        w = vitesse angulaire
-        """
-        v = (self.vR + self.vG) / 2
-        w = (self.vR - self.vG) / self.robot.WHEEL_BASE_WIDTH
-        return v, w
-
     def avancer(self, vitesse):
+        """avance en ligne droite"""
         self.set_vitesse_gauche(vitesse)
         self.set_vitesse_droite(vitesse)
 
@@ -81,3 +70,9 @@ class AdaptateurSimule(Adaptateur):
     def tourner_droite(self, vitesse):
         self.set_vitesse_gauche(0)
         self.set_vitesse_droite(vitesse)
+
+    def get_motor_position(self):
+        """lit les encodeurs du robot mock"""
+        return self.robot.get_motor_position()
+    def stop(self):
+        self.robot.stop()
