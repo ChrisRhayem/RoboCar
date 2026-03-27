@@ -1,5 +1,6 @@
 import math
 from .obstacle import Obstacle
+import time
 
 
 class Simulation:
