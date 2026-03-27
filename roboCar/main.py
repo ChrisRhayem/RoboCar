@@ -1,4 +1,5 @@
 from Source import Simulation, GestionStrategies, Affichage,RoboCar
+import time
 
 LARGEUR = 800
 HAUTEUR = 600
@@ -15,7 +16,7 @@ def main():
     strat.start() #on initialise les strategies
 
     while running:
-        affichage.clock.tick(FPS) #limite la vitesse de la boucle
+        time.sleep(1.0 / FPS) #limite la vitesse de la boucle(attendre juste assez pour faire une boucle toutes les 1/FPS secondes)
         strat.step() #on decide quoi faire 
         sim.update() #on met a jour la position du robot
         running = affichage.update(sim.robot, sim.obstacles) #on met a jour l'affichage

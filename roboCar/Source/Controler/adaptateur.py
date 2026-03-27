@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Adaptateur(ABC):
+    """Les fonctions necessaires pour les fichiers adaptateurs"""
+    
     @abstractmethod
     def initialise(self):
         pass
@@ -52,12 +54,4 @@ class Adaptateur(ABC):
 
     @abstractmethod
     def calculer_vitesse(self):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def stop(self):
         pass

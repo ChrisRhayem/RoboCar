@@ -35,6 +35,7 @@ class AdaptateurSimule(Adaptateur):
     def get_angle(self):
         return self.angle
 
+    #pas la meme chose que get_motor_position()? Pas droit de l'utiliser pour distance//dynamique
     def get_wheel_speeds(self):
         return self.vG, self.vR
 
@@ -46,6 +47,7 @@ class AdaptateurSimule(Adaptateur):
         self.vR = vitesse
         self.robot.set_motor_dps(self.robot.MOTOR_RIGHT, vitesse)
 
+    #Pas bon :(
     def calculer_vitesse(self):
         """
         On garde la meme logique que RoboCar :
@@ -79,19 +81,3 @@ class AdaptateurSimule(Adaptateur):
     def tourner_droite(self, vitesse):
         self.set_vitesse_gauche(0)
         self.set_vitesse_droite(vitesse)
-
-    def update(self):
-        now = time.time()
-        if self._last_update is None:
-            dt = 0.0
-        else:
-            dt = now - self._last_update
-        self._last_update = now
-
-        v, w = self.calculer_vitesse()
-        self.x += v * math.cos(self.angle) * dt
-        self.y += v * math.sin(self.angle) * dt
-        self.angle += w * dt
-
-    def stop(self):
-        self.robot.stop()

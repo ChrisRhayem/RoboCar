@@ -1,4 +1,5 @@
 from Source import Simulation, GestionStrategies, Affichage, Robot2IN013_MOCK, AdaptateurSimule
+import time
 
 LARGEUR = 800
 HAUTEUR = 600
@@ -19,7 +20,7 @@ def main():
     strat.start()
 
     while running:
-        affichage.clock.tick(FPS)
+        time.sleep(1.0 / FPS)
         strat.step()
         sim.update()
         running = affichage.update(sim.robot, sim.obstacles)
