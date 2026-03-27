@@ -1,17 +1,19 @@
 import math
-import time
 from .adaptateur import Adaptateur
 
 
 class AdaptateurReel(Adaptateur):
     """
-    Adaptateur pour le vrai Robot2IN013
-    On garde la meme interface que l'adaptateur simule
+    Adaptateur pour le vrai robot
+    meme interface que le simule
     """
+
+    WHEEL_BASE_WIDTH = 117
 
     def __init__(self, robot, nom="Flash", coordonnees=(0, 0), angle=0):
         self.robot = robot
         self.nom = nom
+
         self.x, self.y = coordonnees
         self.angle = math.radians(angle)
 
@@ -21,13 +23,11 @@ class AdaptateurReel(Adaptateur):
         self.largeur = 40
         self.longueur = 50
 
-        self._last_update = None
-
     def initialise(self):
+        """reset encodeurs"""
         pos_g, pos_d = self.robot.get_motor_position()
         self.robot.offset_motor_encoder(self.robot.MOTOR_LEFT, pos_g)
         self.robot.offset_motor_encoder(self.robot.MOTOR_RIGHT, pos_d)
-        self._last_update = None
 
     def get_position(self):
         return self.x, self.y
@@ -45,11 +45,6 @@ class AdaptateurReel(Adaptateur):
     def set_vitesse_droite(self, vitesse):
         self.vR = vitesse
         self.robot.set_motor_dps(self.robot.MOTOR_RIGHT, vitesse)
-
-    def calculer_vitesse(self):
-        v = (self.vR + self.vG) / 2
-        w = (self.vR - self.vG) / self.robot.WHEEL_BASE_WIDTH
-        return v, w
 
     def avancer(self, vitesse):
         self.set_vitesse_gauche(vitesse)
@@ -75,21 +70,25 @@ class AdaptateurReel(Adaptateur):
         self.set_vitesse_gauche(0)
         self.set_vitesse_droite(vitesse)
 
-    def update(self):
-        """
-        Estimation simple de la position 
-        """
-        now = time.time()
-        if self._last_update is None:
-            dt = 0.0
-        else:
-            dt = now - self._last_update
-        self._last_update = now
+    def get_motor_position(self):
+        return self.robot.get_motor_position()
 
-        v, w = self.calculer_vitesse()
-        self.x += v * math.cos(self.angle) * dt
-        self.y += v * math.sin(self.angle) * dt
-        self.angle += w * dt
+    def get_distance_parcourue(self):
+        ang_g, ang_d = self.get_motor_position()
+
+        dist_g = (ang_g / 360) * self.robot.WHEEL_CIRCUMFERENCE
+        dist_d = (ang_d / 360) * self.robot.WHEEL_CIRCUMFERENCE
+
+        return (dist_g + dist_d) / 2
+
+    def get_angle_parcouru(self):
+        ang_g, ang_d = self.get_motor_position()
+
+        dist_g = (ang_g / 360) * self.robot.WHEEL_CIRCUMFERENCE
+        dist_d = (ang_d / 360) * self.robot.WHEEL_CIRCUMFERENCE
+
+        angle = (dist_d - dist_g) / self.robot.WHEEL_BASE_WIDTH
+        return angle
 
     def stop(self):
         self.robot.stop()
