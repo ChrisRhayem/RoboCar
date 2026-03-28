@@ -90,6 +90,9 @@ class AdaptateurSimule(Adaptateur):
         else:
             dt = now - self._last_update
         self._last_update = now # enregistre le nouveau temps de référence
+        self.pos_g += self.vG * dt #faire avancer les encodeurs selon la vitesse des roues
+        self.pos_d += self.vR * dt
+        return self.pos_g, self.pos_d 
 
 
 
