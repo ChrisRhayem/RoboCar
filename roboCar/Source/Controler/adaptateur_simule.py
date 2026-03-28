@@ -84,7 +84,11 @@ class AdaptateurSimule(Adaptateur):
 
     def get_motor_position(self):
         """lit les encodeurs du robot mock"""
-        return self.robot.get_motor_position()
+        now = time.time() #On récupère le temps actuel.
+        
+
+    
+
     def get_distance_parcourue(self):
         """
         calcule la distance parcourue a partir des encodeurs
