@@ -4,7 +4,7 @@ import time
 class Simulation:
     """
     Cette classe represente le monde simule
-    Elle contient le robot , les obstacles et les dimensions de la fenêtre
+    Elle contient le robot les obstacles et les dimensions de la fenetre
     """
 
     def __init__(self, largeur, hauteur,robot,mode):
