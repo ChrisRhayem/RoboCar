@@ -89,7 +89,9 @@ class AdaptateurSimule(Adaptateur):
             dt = 0
         else:
             dt = now - self._last_update
-        
+        self._last_update = now # enregistre le nouveau temps de référence
+
+
 
 
     
