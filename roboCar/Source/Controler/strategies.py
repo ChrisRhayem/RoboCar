@@ -97,3 +97,19 @@ class Condition:
 
     def stop(self):
         return False #une strategie conditionnelle ne s'arrete jamais seule
+class Boucle:
+    """Strategie qui repete une autre strategie a l'infini"""
+    def __init__(self, strat):
+        self.strat = strat  #strategie interne a repeter
+
+    def start(self):
+        self.strat.start() #on demarre la strategie
+
+    def step(self):
+        if self.strat.stop(): #si la strategie est finie -> on la relance
+            self.strat.start()
+
+        self.strat.step() #sinon on continue
+
+    def stop(self):
+        return False #une boucle ne s'arrete jamais
