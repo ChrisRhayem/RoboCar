@@ -70,3 +70,30 @@ class Sequence:
     def stop(self):
         return self.i >= len(self.strategies) #True si toutes les strategies ont ete executees
 
+class Condition:
+    """Strategie conditionnelle qui choisit dynamiquement entre 2 strategies"""
+    def __init__(self, s1, s2, adaptateur, distance):
+        self.s1 = s1  #strategie si obstacle proche
+        self.s2 = s2  #strategie sinon
+        self.adaptateur = adaptateur
+        self.distance = distance #distance seuil pour detecter un obstacle
+        self.current = None #strategie actuellement active
+
+    def start(self):
+        self.current = None #aucune strategie active au debut
+
+    def step(self):
+        d = self.adaptateur.get_distance() #lecture de la distance devant le robot
+        if d<self.distance: #si obstacle proche donc strategie 1
+            new =self.s1
+        else:
+            new=self.s2
+        if self.current is not new: #si la strategie change on reset
+            self.current = new
+            self.current.start()
+        elif self.current.stop(): #si la strategie est la meme mais terminee on la relance
+            self.current.start()
+        self.current.step() #execution d'un pas
+
+    def stop(self):
+        return False #une strategie conditionnelle ne s'arrete jamais seule
