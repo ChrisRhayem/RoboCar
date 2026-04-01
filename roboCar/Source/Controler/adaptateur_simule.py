@@ -16,7 +16,7 @@ class AdaptateurSimule(Adaptateur):
         self.old_angle = robot.get_angle()
 
     #Problem avec les noms des foncctions 
-    def set_vitesse(self, v, w):
+    def set_vitesse(self, v, w): 
         """Convertit v et w en vitesses des roues
         """
         vG = v - (w * self.robot.WHEEL_BASE / 2)
