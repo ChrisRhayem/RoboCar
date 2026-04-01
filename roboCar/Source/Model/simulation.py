@@ -5,7 +5,7 @@ class Simulation:
     """Classe qui represente le monde elle sert uniquement a stocker les dimensions,obstacles et verifier les collision
     """
 
-    def __init__(self, largeur, hauteur, obstacles=None):
+    def __init__(self, largeur, hauteur):
         self.largeur = largeur #largeur de la fenetre
         self.hauteur = hauteur #hauteur de la fenetre
         self.obstacles = [
