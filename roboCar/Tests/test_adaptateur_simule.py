@@ -1,19 +1,20 @@
 import unittest
 import math
 
-from Source.Model import Simulation, RoboCar,Obstacle
+from Source.Model import Simulation, RoboCar, Obstacle
 from Source.Controler import AdaptateurSimule
 
 
 class TestAdaptateurSimule(unittest.TestCase):
     def setUp(self):
         """Prepare un monde simple avant chaque test"""
-        self.sim = Simulation(800, 600, obstacles=[])
+        self.sim = Simulation(800, 600)
+        self.sim.obstacles = []  #on vide les obstacles pour maitriser les tests
         self.robocar = RoboCar("Flash", (100, 200), 0, simulation=self.sim)
         self.adaptateur = AdaptateurSimule(self.robocar)
 
-    def test_set_vitesse(self):
-        """Verifie que set_vitesse(v, w) met bien a jour les vitesses des roues du robot"""
+    def test_set_vitesse_translation(self):
+        """Verifie que set_vitesse(v, w) met les deux roues a la meme vitesse si w = 0"""
         self.adaptateur.set_vitesse(10, 0)
         self.assertEqual(self.robocar.vG, 10)
         self.assertEqual(self.robocar.vR, 10)
@@ -23,22 +24,11 @@ class TestAdaptateurSimule(unittest.TestCase):
         self.adaptateur.set_vitesse(0, 2)
         self.assertNotEqual(self.robocar.vG, self.robocar.vR)
 
-    def test_avancer(self):
-        """Verifie que avancer() met les deux roues a la meme vitesse"""
-        self.adaptateur.avancer(4)
-        self.assertEqual(self.robocar.vG, 4)
-        self.assertEqual(self.robocar.vR, 4)
-
-    def test_reculer(self):
-        """Verifie que reculer() met les deux roues a une vitesse negative"""
-        self.adaptateur.reculer(3)
+    def test_set_vitesse_recul(self):
+        """Verifie que set_vitesse(v, w) permet de reculer si v est negatif"""
+        self.adaptateur.set_vitesse(-3, 0)
         self.assertEqual(self.robocar.vG, -3)
         self.assertEqual(self.robocar.vR, -3)
-
-    def test_tourner_sur_place(self):
-        """Verifie que tourner_sur_place() met les roues en sens oppose"""
-        self.adaptateur.tourner_sur_place(0.5)
-        self.assertAlmostEqual(self.robocar.vG, -self.robocar.vR)
 
     def test_arreter(self):
         """Verifie que arreter() remet les vitesses des roues a zero"""
@@ -49,21 +39,18 @@ class TestAdaptateurSimule(unittest.TestCase):
         self.assertEqual(self.robocar.vR, 0)
 
     def test_get_distance_sans_obstacle(self):
-        """Verifie que get_distance() retourne une distance positive quand il n'y a pas d'obstacle juste devant"""
+        """Verifie que get_distance() retourne une distance positive s'il n'y a pas d'obstacle devant"""
         distance = self.adaptateur.get_distance()
         self.assertGreater(distance, 0)
 
     def test_get_distance_avec_obstacle_devant(self):
         """Verifie que get_distance() detecte un obstacle place devant le robot"""
-        # obstacle devant le robot
-        self.sim.obstacles = []
         self.sim.obstacles.append(Obstacle("rectangle", (150, 180), (40, 40)))
         distance = self.adaptateur.get_distance()
         self.assertLess(distance, 120)
 
     def test_get_distance_parcourue(self):
-        """Verifie que get_distance_parcourue() retourne une distance positive si la position du robot a change"""
-        # ancienne position memorisee au setUp : (100, 200)
+        """Verifie que get_distance_parcourue() retourne une distance positive si la position du robot change"""
         self.robocar.appliquer(110, 200, self.robocar.angle)
         distance = self.adaptateur.get_distance_parcourue()
         self.assertAlmostEqual(distance, 10)
@@ -74,9 +61,9 @@ class TestAdaptateurSimule(unittest.TestCase):
         self.assertEqual(distance, 0)
 
     def test_get_angle_parcouru(self):
-        """Verifie que get_angle_parcouru() retourne un angle positif si l'orientation du robot a change"""
+        """Verifie que get_angle_parcouru() retourne un angle positif si l'orientation change"""
         ancien_angle = self.robocar.angle
-        nouvel_angle = ancien_angle + math.pi / 4  # 45 degres
+        nouvel_angle = ancien_angle + math.pi / 4  #45 degres
         self.robocar.appliquer(self.robocar.x, self.robocar.y, nouvel_angle)
         angle = self.adaptateur.get_angle_parcouru()
         self.assertAlmostEqual(angle, math.pi / 4)
@@ -84,7 +71,6 @@ class TestAdaptateurSimule(unittest.TestCase):
     def test_get_angle_parcouru_nul(self):
         """Verifie que get_angle_parcouru() vaut 0 si l'angle n'a pas change"""
         angle = self.adaptateur.get_angle_parcouru()
-
         self.assertEqual(angle, 0)
 
 

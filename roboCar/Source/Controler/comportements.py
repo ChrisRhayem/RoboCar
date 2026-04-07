@@ -12,7 +12,7 @@ def creer_strategie(adaptateur):
     ])
     #comportement reactif,si obs proche on tourne et on avance un peu sinon
     reaction = Condition(
-        TournerXDegrees(adaptateur, 45, 0.08, 2),
+        TournerXDegrees(adaptateur, 45, 0.08, 0),
         AvancerXMetres(adaptateur, 2, 2),
         adaptateur,
         obstacle_proche
